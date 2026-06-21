@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tux Typing — Web Edition</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- MENU SCREEN -->
+  <div id="screen-menu" class="screen active">
+    <div class="menu-bg">
+      <div class="stars" id="stars"></div>
+    </div>
+    <div class="menu-content">
+      <div class="logo">
+        <div class="tux-logo">🐧</div>
+        <h1>Tux Typing</h1>
+        <p class="subtitle">Web Edition</p>
+      </div>
+      <div class="difficulty-select">
+        <h2>Select Difficulty</h2>
+        <div class="diff-buttons">
+          <button class="diff-btn active" data-diff="easy">
+            <span class="diff-icon">🐣</span>
+            <span class="diff-name">Easy</span>
+            <span class="diff-desc">Short words, slow speed</span>
+          </button>
+          <button class="diff-btn" data-diff="medium">
+            <span class="diff-icon">🐧</span>
+            <span class="diff-name">Medium</span>
+            <span class="diff-desc">Common words, normal speed</span>
+          </button>
+          <button class="diff-btn" data-diff="hard">
+            <span class="diff-icon">🦅</span>
+            <span class="diff-name">Hard</span>
+            <span class="diff-desc">Long words, high speed</span>
+          </button>
+        </div>
+      </div>
+      <button id="btn-play" class="btn-primary">▶ Play</button>
+      <button id="btn-practice" class="btn-secondary">📝 Practice Mode</button>
+      <div class="highscores-preview">
+        <h3>High Scores</h3>
+        <ol id="menu-scores"></ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="screen-game" class="screen">
+    <canvas id="game-canvas"></canvas>
+    <div id="hud">
+      <div class="hud-left">
+        <span class="hud-label">SCORE</span>
+        <span id="hud-score">0</span>
+      </div>
+      <div class="hud-center">
+        <span class="hud-label">LEVEL</span>
+        <span id="hud-level">1</span>
+      </div>
+      <div class="hud-right">
+        <span class="hud-label">LIVES</span>
+        <span id="hud-lives">❤️❤️❤️</span>
+      </div>
+    </div>
+    <div id="input-bar">
+      <span id="input-prefix">▶</span>
+      <span id="input-display"></span>
+      <span class="cursor blink">|</span>
+    </div>
+    <div id="combo-display"></div>
+    <button id="btn-pause" title="Pause (Esc)">⏸</button>
+  </div>
+
+  <!-- PAUSE SCREEN -->
+  <div id="screen-pause" class="screen overlay">
+    <div class="modal">
+      <h2>Paused</h2>
+      <button id="btn-resume" class="btn-primary">▶ Resume</button>
+      <button id="btn-menu-from-pause" class="btn-secondary">🏠 Main Menu</button>
+    </div>
+  </div>
+
+  <!-- GAMEOVER SCREEN -->
+  <div id="screen-gameover" class="screen overlay">
+    <div class="modal">
+      <div class="result-icon" id="result-icon">💀</div>
+      <h2 id="gameover-title">Game Over</h2>
+      <div class="final-stats">
+        <div class="stat"><span>Score</span><strong id="final-score">0</strong></div>
+        <div class="stat"><span>Words Typed</span><strong id="final-words">0</strong></div>
+        <div class="stat"><span>Accuracy</span><strong id="final-accuracy">0%</strong></div>
+        <div class="stat"><span>Max Combo</span><strong id="final-combo">0</strong></div>
+      </div>
+      <div id="new-highscore-badge" class="hidden">🏆 New High Score!</div>
+      <input id="name-input" type="text" placeholder="Enter your name" maxlength="12" autocomplete="off">
+      <button id="btn-save-score" class="btn-primary">💾 Save Score</button>
+      <button id="btn-play-again" class="btn-secondary">🔄 Play Again</button>
+      <button id="btn-menu-from-gameover" class="btn-tertiary">🏠 Main Menu</button>
+    </div>
+  </div>
+
+  <!-- PRACTICE SCREEN -->
+  <div id="screen-practice" class="screen">
+    <div id="practice-container">
+      <div id="practice-header">
+        <h2>Practice Mode</h2>
+        <button id="btn-practice-back" class="btn-secondary">← Back</button>
+      </div>
+      <div id="practice-word-display">
+        <div id="practice-word"></div>
+        <div id="practice-progress"></div>
+      </div>
+      <div id="practice-input-wrap">
+        <input id="practice-input" type="text" autocomplete="off" spellcheck="false" placeholder="Type the word above...">
+      </div>
+      <div id="practice-stats">
+        <span>Words: <strong id="pstat-words">0</strong></span>
+        <span>WPM: <strong id="pstat-wpm">0</strong></span>
+        <span>Accuracy: <strong id="pstat-acc">100%</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <script src="words.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
