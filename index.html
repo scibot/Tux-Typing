@@ -40,6 +40,23 @@
       </div>
       <button id="btn-play" class="btn-primary">▶ Play</button>
       <button id="btn-practice" class="btn-secondary">📝 Practice Mode</button>
+
+      <!-- Secret levels (shown once unlocked) -->
+      <div id="secret-levels-section" class="hidden">
+        <h3 class="secret-levels-title">🔓 Secret Levels</h3>
+        <div id="secret-levels-list"></div>
+      </div>
+
+      <!-- Secret code input -->
+      <div id="secret-code-wrap">
+        <div id="secret-code-toggle" title="Enter a secret code">🔒</div>
+        <div id="secret-code-panel" class="hidden">
+          <input id="secret-code-input" type="text" placeholder="Enter secret code..." autocomplete="off" spellcheck="false" maxlength="20">
+          <button id="btn-secret-submit">Unlock</button>
+          <div id="secret-feedback"></div>
+        </div>
+      </div>
+
       <div class="highscores-preview">
         <h3>High Scores</h3>
         <ol id="menu-scores"></ol>

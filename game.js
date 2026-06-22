@@ -14,6 +14,7 @@ const COLORS = ['#4fc3f7','#81d4fa','#b3e5fc','#80deea','#a5d6a7','#fff176','#ff
 let canvas, ctx;
 let gameState = 'menu'; // menu | playing | paused | gameover
 let selectedDiff = 'easy';
+let selectedSecret = null; // key into SECRET_LEVELS, or null
 let diff;
 
 let words = [];        // falling word objects
@@ -59,6 +60,10 @@ function shuffle(arr) {
 }
 
 function wordPool() {
+  // secret levels store their words in SECRET_WORD_LISTS
+  if (diff._secret && SECRET_WORD_LISTS[diff.wordList]) {
+    return SECRET_WORD_LISTS[diff.wordList];
+  }
   return WORD_LISTS[diff.wordList];
 }
 
@@ -566,8 +571,14 @@ function updateComboDisplay() {
 }
 
 // ── Start / End ──────────────────────────────────────────────────────────────
-function startGame() {
-  diff = DIFFICULTY[selectedDiff];
+function startGame(secretKey = null) {
+  if (secretKey) {
+    const sl = SECRET_LEVELS[secretKey];
+    diff = { ...sl, _secret: true };
+  } else {
+    diff = DIFFICULTY[selectedDiff];
+    selectedSecret = null;
+  }
   words = [];
   particles = [];
   typed = '';
@@ -757,6 +768,89 @@ $('practice-input').addEventListener('keydown', e => {
   }
 });
 
+// ── Secret Levels ────────────────────────────────────────────────────────────
+function loadUnlocked() {
+  try { return JSON.parse(localStorage.getItem('tuxtyping_unlocked') || '[]'); } catch { return []; }
+}
+function saveUnlocked(keys) {
+  localStorage.setItem('tuxtyping_unlocked', JSON.stringify(keys));
+}
+
+function renderSecretLevels() {
+  const unlocked = loadUnlocked();
+  const section = $('secret-levels-section');
+  const list = $('secret-levels-list');
+  if (!unlocked.length) { section.classList.add('hidden'); return; }
+
+  section.classList.remove('hidden');
+  list.innerHTML = '';
+  for (const key of unlocked) {
+    const sl = SECRET_LEVELS[key];
+    if (!sl) continue;
+    const btn = document.createElement('button');
+    btn.className = 'secret-level-btn';
+    btn.innerHTML = `
+      <span class="sl-icon">${sl.icon}</span>
+      <span class="sl-info">
+        <span class="sl-name">${sl.name}</span>
+        <span class="sl-desc">${sl.description}</span>
+      </span>
+    `;
+    btn.addEventListener('click', () => startGame(key));
+    list.appendChild(btn);
+  }
+}
+
+function tryUnlockCode(rawCode) {
+  const code = rawCode.trim().toLowerCase();
+  const unlocked = loadUnlocked();
+  let matched = null;
+
+  for (const [key, sl] of Object.entries(SECRET_LEVELS)) {
+    if (sl.code === code) { matched = key; break; }
+  }
+
+  const fb = $('secret-feedback');
+  if (!matched) {
+    fb.textContent = '✗ Wrong code. Keep guessing...';
+    fb.className = 'fail';
+    setTimeout(() => { fb.textContent = ''; fb.className = ''; }, 2500);
+    return;
+  }
+  if (unlocked.includes(matched)) {
+    fb.textContent = `Already unlocked: ${SECRET_LEVELS[matched].name}!`;
+    fb.className = 'success';
+    setTimeout(() => { fb.textContent = ''; fb.className = ''; }, 2500);
+    return;
+  }
+
+  unlocked.push(matched);
+  saveUnlocked(unlocked);
+  renderSecretLevels();
+
+  fb.textContent = `🔓 Unlocked: ${SECRET_LEVELS[matched].name}!`;
+  fb.className = 'success';
+  $('secret-code-input').value = '';
+  setTimeout(() => { fb.textContent = ''; fb.className = ''; }, 3000);
+}
+
+// secret code toggle
+$('secret-code-toggle').addEventListener('click', () => {
+  const panel = $('secret-code-panel');
+  const toggle = $('secret-code-toggle');
+  const open = panel.classList.toggle('hidden');
+  toggle.classList.toggle('open', !open);
+  if (!open) $('secret-code-input').focus();
+});
+
+$('btn-secret-submit').addEventListener('click', () => {
+  tryUnlockCode($('secret-code-input').value);
+});
+
+$('secret-code-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') tryUnlockCode($('secret-code-input').value);
+});
+
 // ── Button Wiring ────────────────────────────────────────────────────────────
 $('btn-play').addEventListener('click', () => startGame());
 $('btn-practice').addEventListener('click', () => startPractice());
@@ -768,12 +862,14 @@ $('btn-menu-from-pause').addEventListener('click', () => {
   cancelAnimationFrame(animId);
   showScreen('screen-menu');
   renderMenuScores();
+  renderSecretLevels();
 });
 
 $('btn-menu-from-gameover').addEventListener('click', () => {
   gameState = 'menu';
   showScreen('screen-menu');
   renderMenuScores();
+  renderSecretLevels();
 });
 
 $('btn-play-again').addEventListener('click', () => {
@@ -806,4 +902,5 @@ document.querySelectorAll('.diff-btn').forEach(btn => {
 initStars();
 initCanvas();
 renderMenuScores();
+renderSecretLevels();
 showScreen('screen-menu');

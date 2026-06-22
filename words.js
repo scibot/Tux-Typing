@@ -43,6 +43,38 @@ const WORD_LISTS = {
   ],
 };
 
+// ── Secret Level Word Lists ────────────────────────────────────────────────
+const SECRET_WORD_LISTS = {
+  funny: [
+    'butt','butts','boob','boobs','balls','fart','farts','farted',
+    'poop','poopy','poop','toot','toots','burp','burps','burped',
+    'buns','bum','bummy','dork','dorks','dooky','dookie','stinky',
+    'sticky','booger','boogers','wiener','wienie','undies','wedgie',
+    'wedgies','dingus','dingbat','nutty','goofy','wacky','loony',
+    'bonkers','chunky','bumpy','lumpy','dumpy','frumpy','grumpy',
+    'rumpus','tushie','hiney','honker','snorkel','doofus','goober',
+    'noogie','hooey','baloney','phooey','weirdo','noodly','wobbly',
+    'jiggly','wiggly','squiggly','giggly','bubbly','wobbly','flabby',
+    'slobber','drool','drooler','tooter','tooting','pooting','pooted',
+    'dingdong','numbskull','klutz','klutzy','dweeb','dweebs','spazzy',
+  ],
+};
+
+// Secret level metadata
+const SECRET_LEVELS = {
+  funny: {
+    name: 'Funny Words',
+    icon: '🤣',
+    code: 'stinky socks',
+    description: 'Silly words only!',
+    wordList: 'funny',
+    speed: 0.9,
+    spawnRate: 3200,
+    maxWords: 5,
+    lives: 5,
+  },
+};
+
 // flatten all words for practice
 const ALL_WORDS = [...new Set([
   ...WORD_LISTS.easy,
